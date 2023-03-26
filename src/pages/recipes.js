@@ -1,12 +1,16 @@
-import React from "react";
-import Layout from "../components/Layout";
-
+import React from 'react'
+import Layout from '../components/Layout'
+import AllRecipes from '../components/AllRecipes'
+import SEO from '../components/SEO'
 function Recipes() {
   return (
     <Layout>
-      <h1>Recipes Page</h1>
+      <SEO title='Recipes' />
+      <main className='page'>
+        <AllRecipes />
+      </main>
     </Layout>
-  );
+  )
 }
 
-export default Recipes;
+export default Recipes

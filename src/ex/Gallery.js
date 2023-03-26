@@ -1,16 +1,17 @@
 import React from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
-import { GatsbyImage } from 'gatsby-plugin-image'
+import { useStaticQuery, graphql } from 'gatsby'
+import { GatsbyImage, getImage } from 'gatsby-plugin-image'
 import styled from 'styled-components'
 const query = graphql`
-  query {
-    allFile(filter: { extension: { ne: "svg" }, ext: { ne: "css" } }) {
+  {
+    allFile(filter: { extension: { ne: "svg" } }) {
       nodes {
-        childrenImageSharp {
+        childImageSharp {
           gatsbyImageData(
             layout: FIXED
-            transformOptions: { grayscale: true }
             placeholder: BLURRED
+            width: 200
+            height: 200
           )
         }
         name
@@ -19,25 +20,38 @@ const query = graphql`
   }
 `
 
-function Gallery() {
+const Gallery = () => {
   const data = useStaticQuery(query)
-  console.log('🚀 ~ file: Gallery.js:24 ~ Gallery ~ data:', data)
-  const node = data.allFile.nodes
+  const nodes = data.allFile.nodes
   return (
     <Wrapper>
-      {node.map((item, index) => {
+      {nodes.map((image, index) => {
+        const { name } = image
+        const pathToImage = getImage(image)
         return (
-          <div key={index}>
-            <p>{item.name}</p>
-
-            {/* <GatsbyImage image={item.childrenImageSharp.gatsbyImageData} /> */}
-          </div>
+          <article key={index} className='item'>
+            <GatsbyImage
+              image={pathToImage}
+              alt={name}
+              className='gallery-img'
+            />
+            <p>{name}</p>
+          </article>
         )
       })}
     </Wrapper>
   )
 }
 
-export default Gallery
+const Wrapper = styled.section`
+  display: flex;
+  flex-wrap: wrap;
+  .item {
+    margin-right: 1rem;
+  }
+  .gallery-img {
+    border-radius: 1rem;
+  }
+`
 
-const Wrapper = styled.div``
+export default Gallery
